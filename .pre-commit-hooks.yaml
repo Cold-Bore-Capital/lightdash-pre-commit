@@ -1,7 +1,25 @@
 - id: check-duplicate-dims-and-metrics
   name: Check for duplicate dimensions and metrics
-  description: Checks to ensure that a metric or dimension name only exists once within the dbt schema file for a given model.
+  description: "Checks to ensure that a metric or dimension name only exists once within the dbt schema file for a given model."
   entry: check-duplicate-dims-and-metrics
+  pass_filenames: true
+  language: python
+  types_or: [ yaml ]
+  files: '.*\.(yml|yaml)$'
+
+- id: find_missing_metric_group_labels
+  name: Check for missing group labels in metric columns
+  description: "This hook will look for any metrics that are missing a `group_label` key in the dbt schema file."
+  entry: find_missing_metric_group_labels
+  pass_filenames: true
+  language: python
+  types_or: [ yaml ]
+  files: '.*\.(yml|yaml)$'
+
+- id: find_missing_dimension_group_labels
+  name: Check for missing group labels in dimension columns
+  description: "This hook will look for any dimensions that are missing a `group_label` key in the dbt schema file. Excludes any dimension with `hidden: true`"
+  entry: find_missing_dimension_group_labels
   pass_filenames: true
   language: python
   types_or: [ yaml ]
