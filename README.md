@@ -6,7 +6,7 @@ After installing pre-commit, add the following block to your `.pre-commit-config
 
 ```yaml
   - repo: https://github.com/Cold-Bore-Capital/lightdash-pre-commit.git
-    rev: 0.0.6
+    rev: <check for latest release>
     hooks:
       - id: check-duplicate-dims-and-metrics
       - id: find_missing_metric_group_labels
