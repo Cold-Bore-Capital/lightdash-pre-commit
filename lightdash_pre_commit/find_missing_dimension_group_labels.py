@@ -4,6 +4,7 @@ from typing import Sequence
 
 import yaml
 
+
 def find_missing_group_labels(data: dict) -> list:
     errors = []
 
@@ -14,21 +15,37 @@ def find_missing_group_labels(data: dict) -> list:
                 # Check primary dimension
                 if "dimension" in column["meta"]:
                     dimension_details = column["meta"]["dimension"]
-                    if not dimension_details.get("hidden", False) and "group_label" not in dimension_details:
-                        errors.append(f"Missing 'group_label' in dimension of column '{column.get('name')}'.")
+                    if (
+                        not dimension_details.get("hidden", False)
+                        and "group_label" not in dimension_details
+                    ):
+                        errors.append(
+                            f"Missing 'group_label' in dimension of column '{column.get('name')}'."
+                        )
 
                 # Check additional dimensions
                 if "additional_dimensions" in column["meta"]:
-                    for dimension_name, dim_details in column["meta"]["additional_dimensions"].items():
-                        if not dim_details.get("hidden", False) and "group_label" not in dim_details:
-                            errors.append(f"Missing 'group_label' in additional dimension '{dimension_name}' in column '{column.get('name')}'.")
+                    for dimension_name, dim_details in column["meta"][
+                        "additional_dimensions"
+                    ].items():
+                        if (
+                            not dim_details.get("hidden", False)
+                            and "group_label" not in dim_details
+                        ):
+                            errors.append(
+                                f"Missing 'group_label' in additional dimension '{dimension_name}' in column "
+                                f"'{column.get('name')}'."
+                            )
 
     return errors
+
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "filenames", nargs="*", help="Check YAML files for missing 'group_label' in dimensions"
+        "filenames",
+        nargs="*",
+        help="Check YAML files for missing 'group_label' in dimensions",
     )
     args = parser.parse_args(argv)
 
@@ -51,6 +68,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return 1
 
     return 0
+
 
 if __name__ == "__main__":
     exit(main(None))

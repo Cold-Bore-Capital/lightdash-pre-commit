@@ -1,6 +1,9 @@
 import unittest
-from lightdash_pre_commit.check_duplicate_metric_dimension_names import find_duplicates
+
 import yaml
+
+from lightdash_pre_commit.check_duplicate_metric_dimension_names import find_duplicates
+
 
 class TestDBTYAMLChecks(unittest.TestCase):
     def test_no_metrics_or_dimensions(self):
@@ -94,7 +97,10 @@ models:
         """
         data = yaml.safe_load(yaml_data)
         errors = find_duplicates(data)
-        self.assertIn("Duplicate name 'revenue_total' used 2 times (as metrics or dimensions).", errors)
+        self.assertIn(
+            "Duplicate name 'revenue_total' used 2 times (as metrics or dimensions).",
+            errors,
+        )
 
     def test_duplicate_within_metrics(self):
         yaml_data = """
@@ -121,7 +127,9 @@ models:
         """
         data = yaml.safe_load(yaml_data)
         errors = find_duplicates(data)
-        self.assertIn("Duplicate name 'test_me' used 2 times (as metrics or dimensions).", errors)
+        self.assertIn(
+            "Duplicate name 'test_me' used 2 times (as metrics or dimensions).", errors
+        )
 
     def test_duplicate_within_dimensions(self):
         yaml_data = """
@@ -150,7 +158,9 @@ models:
         """
         data = yaml.safe_load(yaml_data)
         errors = find_duplicates(data)
-        self.assertIn("Duplicate name 'test_me' used 2 times (as metrics or dimensions).", errors)
+        self.assertIn(
+            "Duplicate name 'test_me' used 2 times (as metrics or dimensions).", errors
+        )
 
 
 if __name__ == "__main__":

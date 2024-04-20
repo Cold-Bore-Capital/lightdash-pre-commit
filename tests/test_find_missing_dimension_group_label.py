@@ -1,6 +1,6 @@
 import unittest
+
 import yaml
-from unittest.mock import patch
 
 from lightdash_pre_commit.find_missing_dimension_group_labels import (
     find_missing_group_labels,

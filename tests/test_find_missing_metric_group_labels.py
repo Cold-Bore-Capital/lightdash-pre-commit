@@ -1,6 +1,6 @@
 import unittest
+
 import yaml
-from unittest.mock import patch
 
 from lightdash_pre_commit.find_missing_metric_group_labels import (
     find_missing_group_labels,
@@ -166,7 +166,10 @@ models:
         """
         data = yaml.safe_load(yaml_data)
         errors = find_missing_group_labels(data)
-        self.assertIn("Missing 'group_label' in model-level metric 'profit_total'.", errors)
+        self.assertIn(
+            "Missing 'group_label' in model-level metric 'profit_total'.", errors
+        )
+
     def test_multiple_metrics_missing_group_labels_across_models(self):
         yaml_data = """
 models:

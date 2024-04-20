@@ -20,12 +20,14 @@ def find_duplicates(data: dict) -> list:
         for column in model.get("columns", []):
             # Process column-level dimensions
             if "meta" in column and "dimension" in column["meta"]:
-                column_name = column['name']
+                column_name = column["name"]
                 all_names[column_name] = all_names.get(column_name, 0) + 1
 
             # Process column-level additional dimensions
             if "meta" in column and "additional_dimensions" in column["meta"]:
-                for ad_dim, ad_details in column["meta"]["additional_dimensions"].items():
+                for ad_dim, ad_details in column["meta"][
+                    "additional_dimensions"
+                ].items():
                     all_names[ad_dim] = all_names.get(ad_dim, 0) + 1
 
             # Process column-level metrics
