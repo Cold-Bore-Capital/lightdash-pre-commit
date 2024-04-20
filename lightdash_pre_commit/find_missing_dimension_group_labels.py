@@ -17,7 +17,9 @@ def find_missing_group_labels(data: dict) -> list:
                     dimension_details = column["meta"]["dimension"]
                     if (
                         not dimension_details.get("hidden", False)
+                        and not dimension_details.get("skip_group_label", False)
                         and "group_label" not in dimension_details
+
                     ):
                         errors.append(
                             f"Missing 'group_label' in dimension of column '{column.get('name')}'."
@@ -30,6 +32,7 @@ def find_missing_group_labels(data: dict) -> list:
                     ].items():
                         if (
                             not dim_details.get("hidden", False)
+                            and not dim_details.get("skip_group_label", False)
                             and "group_label" not in dim_details
                         ):
                             errors.append(

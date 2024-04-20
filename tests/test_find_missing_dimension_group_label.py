@@ -58,6 +58,44 @@ models:
         errors = find_missing_group_labels(data)
         self.assertEqual(errors, [])
 
+    def test_skip_group_label_attribute(self):
+        yaml_data = """
+models:
+  - name: test_all_dimensions_have_group_label
+    columns:
+      - name: date_at
+        meta:
+          dimension:
+            type: date
+            time_intervals: [ 'DAY', 'WEEK', 'MONTH', 'QUARTER' ]
+            group_label: "Time"
+          additional_dimensions:
+            period_7_days:
+              type: string
+              sql: "abc"
+              group_label: "Period Indicators"
+            period_28_days:
+              type: string
+              sql: "abc"
+              group_label: "Period Indicators"
+          metrics:
+            days_in_period:
+              type: number
+              sql: "(datediff('day', min(date_at), max(date_at)) + 1)"
+              skip_group_label: true
+      - name: revenue
+        meta:
+          dimension:
+            hidden: true
+          metrics:
+            total_revenue:
+              type: sum
+              group_label: "Revenue"
+        """
+        data = yaml.safe_load(yaml_data)
+        errors = find_missing_group_labels(data)
+        self.assertEqual(errors, [])
+
     def test_one_dimension_missing_group_label(self):
         yaml_data = """
 models:

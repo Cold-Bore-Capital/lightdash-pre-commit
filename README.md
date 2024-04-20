@@ -43,7 +43,12 @@ This hook checks for duplicate dimensions and metrics in the Lightdash schema. T
 In this example, a user likely copied and pasted to create the next metric. The name `total_revenue_sum` is duplicated. The hook will look within non-column metrics, additional_dimensions, and column metrics and dimensions.
 
 ### find_missing_metric_group_labels
-This hook checks for missing metric group labels in the Lightdash schema. For example:
+This hook checks for missing metric group labels in the Lightdash schema. 
+
+> [!NOTE]
+> If you want to skip a group label in a metric, add `skip_group_label: true` to the metric. 
+
+For example:
 
 ```yaml
       - name: total_revenue
@@ -59,15 +64,20 @@ This hook checks for missing metric group labels in the Lightdash schema. For ex
               label: "Average Revenue"
               type: average
               group_label: "Revenue Metrics"
+            another_metric:
+              label: "Average Revenue"
+              type: average
+              group_label: "Revenue Metrics"
+              skip_group_label: true  # This metric will not be checked
 ```
 
 In this example, the metric `total_revenue_sum` is missing a `group_label`.
 
 ### find_missing_dimension_group_labels
-This hook checks for missing dimension group labels in the Lightdash schema.
+This hook checks for missing dimension group labels in the Lightdash schema. Add `skip_group_label:true` to the dimension to skip this check.
 
 > [!NOTE]
-> Note, this inspection will ignore any dimension with the attribute `hidden: true`.
+> This inspection will ignore any dimension with the attribute `hidden: true` or where `skip_group_label: true` is set.
 
 
 For example:
