@@ -24,3 +24,12 @@
   language: python
   types_or: [ yaml ]
   files: '.*\.(yml|yaml)$'
+
+- id: find_incorrect_indentation_of_dims_and_metrics
+  name: Find incorrect indentation of dimensions and metrics.
+  description: "This hook will looks for any dimensions or metrics that are not indented correctly in the dbt schema file. This can happen if a metric or dimension is a child of a metric or dimension (or additional_dimensions) property in the YAML file."
+  entry: find_incorrect_indentation_of_dims_and_metrics
+  pass_filenames: true
+  language: python
+  types_or: [ yaml ]
+  files: '.*\.(yml|yaml)$'
