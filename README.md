@@ -1,8 +1,8 @@
 # lightdash-pre-commit
-A system for Git pre-commit checks for Lightdash schema. Currently, this system is fairly limited. If you have suggestions for additional checks, please open an issue. 
+A system for Git pre-commit checks for Lightdash schema. Currently, this system is fairly limited. If you have suggestions for additional checks, please open an issue.
 
 ## Installation
-After installing pre-commit, add the following block to your `.pre-commit-config.yaml` file in the repos section. 
+After installing pre-commit, add the following block to your `.pre-commit-config.yaml` file in the repos section.
 
 ```yaml
   - repo: https://github.com/Cold-Bore-Capital/lightdash-pre-commit.git
@@ -12,7 +12,7 @@ After installing pre-commit, add the following block to your `.pre-commit-config
         files: ^transform\/models\/.*\.(yml|yaml)$
 ```
 
-## Hooks 
+## Hooks
 
 ### check-duplicate-dims-and-metrics
 This hook checks for duplicate dimensions and metrics in the Lightdash schema. This can happen when copying and pasting between dimensions. For example:
@@ -39,6 +39,6 @@ This hook checks for duplicate dimensions and metrics in the Lightdash schema. T
               type: sum
 ```
 
-In this example, a user likely copied and pasted to create the next metric. The name `total_revenue_sum` is duplicated. 
+In this example, a user likely copied and pasted to create the next metric. The name `total_revenue_sum` is duplicated.
 
-The current version does not look across metrics and dimensions. If there is a duplicate name in a metric, and the same name is in a dimension block, it will not raise an error. This is planed for future development. 
+The current version does not look across metrics and dimensions. If there is a duplicate name in a metric, and the same name is in a dimension block, it will not raise an error. This is planed for future development.
