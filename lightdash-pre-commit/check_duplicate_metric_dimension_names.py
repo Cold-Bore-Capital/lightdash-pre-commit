@@ -1,8 +1,10 @@
+from typing import Optional, Sequence
+
 import yaml
 import sys
 
 
-def find_duplicates(data):
+def find_duplicates(data: dict) -> list:
     metric_names = {}
     dimension_names = {}
     errors = []
@@ -39,7 +41,7 @@ def find_duplicates(data):
     return errors
 
 
-def main(file_paths):
+def main(file_paths: Optional[Sequence[str]] = None) -> int:
     for file_path in file_paths:
         try:
             with open(file_path, 'r') as file:
@@ -55,6 +57,8 @@ def main(file_paths):
             print(f"Failed to process '{file_path}': {e}")
             sys.exit(1)
 
+    return 1
+
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    exit(main(sys.argv[1:]))
