@@ -5,38 +5,36 @@ from typing import Sequence
 import yaml
 
 
-def find_missing_group_labels(data: dict) -> list:
+def find_indentation_issues(data: dict) -> list:
     errors = []
 
     for model in data.get("models", []):
-        # Check metrics and dimensions inside each column
         for column in model.get("columns", []):
             if "meta" in column:
-                # Check primary dimension
+                # Check additional_dimensions under dimension
                 if "dimension" in column["meta"]:
-                    dimension_details = column["meta"]["dimension"]
-                    if (
-                        not dimension_details.get("hidden", False)
-                        and not dimension_details.get("skip_group_label", False)
-                        and "group_label" not in dimension_details
-                    ):
+                    if "additional_dimensions" in column["meta"]["dimension"]:
                         errors.append(
-                            f"Missing 'group_label' in dimension of column '{column.get('name')}'."
+                            f"Incorrect indent: 'additional_dimensions' should not be a child of 'dimension' "
+                            f"for column: {column.get('name')}."
                         )
 
-                # Check additional dimensions
+                    # Check metrics under dimension
+                    if "metrics" in column["meta"]["dimension"]:
+                        errors.append(
+                            f"Incorrect indent: 'metrics' should not be a child of 'dimension' for column:"
+                            f" {column.get('name')}."
+                        )
+
+                # Check metrics under additional_dimensions
                 if "additional_dimensions" in column["meta"]:
-                    for dimension_name, dim_details in column["meta"][
+                    for ad_key, ad_value in column["meta"][
                         "additional_dimensions"
                     ].items():
-                        if (
-                            not dim_details.get("hidden", False)
-                            and not dim_details.get("skip_group_label", False)
-                            and "group_label" not in dim_details
-                        ):
+                        if ad_key == "metrics":
                             errors.append(
-                                f"Missing 'group_label' in additional dimension '{dimension_name}' in column "
-                                f"'{column.get('name')}'."
+                                f"Incorrect indent: 'metrics' should not be a child of "
+                                f"'additional_dimensions' at key '{ad_key}' in column: {column.get('name')}."
                             )
 
     return errors
@@ -45,9 +43,7 @@ def find_missing_group_labels(data: dict) -> list:
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "filenames",
-        nargs="*",
-        help="Check YAML files for missing 'group_label' in dimensions",
+        "filenames", nargs="*", help="Filenames to check for indentation correctness"
     )
     args = parser.parse_args(argv)
 
@@ -56,7 +52,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         try:
             with open(file_path, "r") as file:
                 data = yaml.safe_load(file)
-                errors = find_missing_group_labels(data)
+                errors = find_indentation_issues(data)
                 if errors:
                     print(f"Errors found in '{file_path}':")
                     for error in errors:

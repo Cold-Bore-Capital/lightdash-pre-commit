@@ -12,9 +12,8 @@ def find_missing_group_labels(data: dict) -> list:
         # Check metrics at the model-level 'meta' tag
         model_level_metrics = model.get("meta", {}).get("metrics", {})
         for metric, details in model_level_metrics.items():
-            if (
-                    "group_label" not in details
-                and not details.get("skip_group_label", False)
+            if "group_label" not in details and not details.get(
+                "skip_group_label", False
             ):
                 errors.append(
                     f"Missing 'group_label' in model-level metric '{metric}'."
@@ -24,9 +23,8 @@ def find_missing_group_labels(data: dict) -> list:
         for column in model.get("columns", []):
             if "meta" in column and "metrics" in column["meta"]:
                 for metric, details in column["meta"]["metrics"].items():
-                    if (
-                            "group_label" not in details
-                            and not details.get("skip_group_label", False)
+                    if "group_label" not in details and not details.get(
+                        "skip_group_label", False
                     ):
                         errors.append(
                             f"Missing 'group_label' in column metric '{metric}'."

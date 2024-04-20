@@ -11,6 +11,7 @@ After installing pre-commit, add the following block to your `.pre-commit-config
       - id: check-duplicate-dims-and-metrics
       - id: find_missing_metric_group_labels
       - id: find_missing_dimension_group_labels
+      - id: find_incorrect_indentation_of_dims_and_metrics
 ```
 
 ## Hooks
@@ -43,10 +44,10 @@ This hook checks for duplicate dimensions and metrics in the Lightdash schema. T
 In this example, a user likely copied and pasted to create the next metric. The name `total_revenue_sum` is duplicated. The hook will look within non-column metrics, additional_dimensions, and column metrics and dimensions.
 
 ### find_missing_metric_group_labels
-This hook checks for missing metric group labels in the Lightdash schema. 
+This hook checks for missing metric group labels in the Lightdash schema.
 
 > [!NOTE]
-> If you want to skip a group label in a metric, add `skip_group_label: true` to the metric. 
+> If you want to skip a group label in a metric, add `skip_group_label: true` to the metric.
 
 For example:
 
@@ -116,3 +117,28 @@ models:
 ```
 
 In this example, the meta level dimension `date` and the column dimension `revenue` are missing the `group_label` attribute.
+
+### find_incorrect_indentation_of_dims_and_metrics
+This hook looks for instances where a metric, dimension, or additional_dimension key is nested under another of the same. The lightdash system doesn't seem to catch this, and it can have the effect of hiding a metric or dimension from the schema.
+
+In this example, `metrics` has been nested under `additional_dimensions`:
+
+```yaml
+models:
+  - name: MetricsUnderAdditionalDimensions
+    columns:
+      - name: date_at
+        meta:
+          additional_dimensions:
+            period_7_days:
+              type: string
+              label: "Period - 7 Days"
+              sql: "SQL_QUERY_HERE"
+              group_label: "Period Indicators"
+            metrics:
+              days_in_period:
+                type: number
+                label: "Days in Period"
+                sql: "SQL_QUERY_HERE"
+                group_label: "Period Indicators"
+```
