@@ -42,7 +42,7 @@ def find_duplicates(data: dict) -> list:
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument('filenames', nargs='*', help='Filenames to check')
+    parser.add_argument("filenames", nargs="*", help="Filenames to check")
     args = parser.parse_args(argv)
 
     error_flag = False
