@@ -1,7 +1,7 @@
 - id: check-duplicate-dims-and-metrics
   name: Check for duplicate dimensions and metrics
   description: Checks to ensure that a metric or dimension name only exists once within the dbt schema file for a given model.
-  entry: check-duplicate-dims-and-metrics
+  entry: lightdash-pre-commit.check_duplicate_metric_dimension_names:main
   pass_filenames: true
   language: python
   types_or: [ yaml ]
