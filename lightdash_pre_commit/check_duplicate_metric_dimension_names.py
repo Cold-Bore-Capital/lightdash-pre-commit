@@ -1,5 +1,5 @@
 from typing import Optional, Sequence
-
+import argparse
 import yaml
 import sys
 
@@ -41,7 +41,11 @@ def find_duplicates(data: dict) -> list:
     return errors
 
 
-def main(file_paths: Optional[Sequence[str]] = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    parser = argparse.ArgumentParser()
+    args = parser.parse_args(argv)
+    file_paths = args.filenames
+
     for file_path in file_paths:
         try:
             with open(file_path, 'r') as file:
