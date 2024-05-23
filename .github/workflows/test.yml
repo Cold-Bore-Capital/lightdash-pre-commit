@@ -33,4 +33,4 @@ jobs:
         env:
           PYTHONPATH: "${{ github.workspace }}/lightdash_pre-commit:${PYTHONPATH}"
         run: |
-          pre-commit run
+          pytest -v -s "${{ github.workspace }}/tests"
