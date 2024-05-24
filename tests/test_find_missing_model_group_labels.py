@@ -7,7 +7,7 @@ from lightdash_pre_commit.find_missing_model_group_labels import (
 )
 
 
-class TestDBTYAMLModelGroupLabelChecks(unittest.TestCase):
+class TestFindMissingModelGroupLabels(unittest.TestCase):
 
     def test_model_with_group_label(self):
         yaml_data = """
