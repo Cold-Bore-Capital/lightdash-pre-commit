@@ -5,7 +5,9 @@
   pass_filenames: true
   language: python
   types_or: [ yaml ]
-  files: '.*\.(yml|yaml)$'
+  # TODO Support other dbt resource types, if Lightdash supports them
+  # SEE https://github.com/lightdash/lightdash/issues/8641
+  files: 'models/.*\.(yml|yaml)$'
 
 - id: find_missing_metric_group_labels
   name: Check for missing group labels in metric columns
@@ -14,7 +16,9 @@
   pass_filenames: true
   language: python
   types_or: [ yaml ]
-  files: '.*\.(yml|yaml)$'
+  # TODO Support other dbt resource types, if Lightdash supports them
+  # SEE https://github.com/lightdash/lightdash/issues/8641
+  files: 'models/.*\.(yml|yaml)$'
 
 - id: find_missing_dimension_group_labels
   name: Check for missing group labels in dimension columns
@@ -23,7 +27,9 @@
   pass_filenames: true
   language: python
   types_or: [ yaml ]
-  files: '.*\.(yml|yaml)$'
+  # TODO Support other dbt resource types, if Lightdash supports them
+  # SEE https://github.com/lightdash/lightdash/issues/8641
+  files: 'models/.*\.(yml|yaml)$'
 
 - id: find_incorrect_indentation_of_dims_and_metrics
   name: Find incorrect indentation of dimensions and metrics.
@@ -32,4 +38,6 @@
   pass_filenames: true
   language: python
   types_or: [ yaml ]
-  files: '.*\.(yml|yaml)$'
+  # TODO Support other dbt resource types, if Lightdash supports them
+  # SEE https://github.com/lightdash/lightdash/issues/8641
+  files: 'models/.*\.(yml|yaml)$'
