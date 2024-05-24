@@ -12,6 +12,7 @@ After installing pre-commit, add the following block to your `.pre-commit-config
       - id: find_missing_metric_group_labels
       - id: find_missing_dimension_group_labels
       - id: find_incorrect_indentation_of_dims_and_metrics
+      - id: find_missing_model_group_labels
 ```
 
 ## Hooks
@@ -119,7 +120,7 @@ models:
 In this example, the meta level dimension `date` and the column dimension `revenue` are missing the `group_label` attribute.
 
 ### find_incorrect_indentation_of_dims_and_metrics
-This hook looks for instances where a metric, dimension, or additional_dimension key is nested under another of the same. The lightdash system doesn't seem to catch this, and it can have the effect of hiding a metric or dimension from the schema.
+This hook looks for instances where a metric, dimension, or additional_dimension key is nested under another of the same. The Lightdash system doesn't seem to catch this, and it can have the effect of hiding a metric or dimension from the schema.
 
 In this example, `metrics` has been nested under `additional_dimensions`:
 
@@ -141,4 +142,47 @@ models:
                 label: "Days in Period"
                 sql: "SQL_QUERY_HERE"
                 group_label: "Period Indicators"
+```
+
+### find_missing_model_group_labels
+This hook checks for missing group labels in model meta tags within the Lightdash schema. Optionally, it can check against a supplied list of allowed group labels.
+
+For example:
+
+```yaml
+models:
+  - name: example_model
+    description: >
+      This model provides example metrics.
+
+    meta:
+      label: "Example Metrics"
+      group_label: "Finance"
+
+      metrics:
+        total_revenue:
+          label: "Total Revenue"
+          type: number
+          description: "Total revenue from all services."
+          format: 'usd'
+          round: 0
+          group_label: 'Revenue Metrics'
+          sql: "SUM(revenue)"
+```
+
+In this example, the model `example_model` has a group_label `Finance` and a metric `total_revenue` with a group_label `Revenue Metrics`.
+
+If you want to enforce a list of allowed group labels, you can pass them using the `--allowed-labels` argument:
+
+```bash
+pre-commit run --all-files --hook-stage find_missing_model_group_labels --allowed-labels "Finance,Revenue Metrics,Customer Metrics"
+```
+
+Example configuration in `.pre-commit-config.yaml`
+```yaml
+  - repo: https://github.com/Cold-Bore-Capital/lightdash-pre-commit.git
+    rev: 0.0.9
+    hooks:
+      - id: find_missing_model_group_labels
+        args: [ '--allowed-labels', 'Finance,Revenue Metrics,Customer Metrics' ]
 ```

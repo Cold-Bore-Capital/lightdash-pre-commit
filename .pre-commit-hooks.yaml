@@ -41,3 +41,12 @@
   # TODO Support other dbt resource types, if Lightdash supports them
   # SEE https://github.com/lightdash/lightdash/issues/8641
   files: 'models/.*\.(yml|yaml)$'
+
+- id: find_missing_model_group_labels
+  name: Check for missing group labels in model meta tags
+  description: "This hook will look for any models that are missing a `group_label` key in the dbt schema file. Optionally checks against a list of allowed group labels."
+  entry: find_missing_model_group_labels
+  pass_filenames: true
+  language: python
+  types_or: [ yaml ]
+  files: 'models/.*\.(yml|yaml)$'
