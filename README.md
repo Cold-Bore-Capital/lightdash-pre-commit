@@ -182,7 +182,7 @@ Example configuration in `.pre-commit-config.yaml`
 
 ```yaml
   - repo: https://github.com/Cold-Bore-Capital/lightdash-pre-commit.git
-    rev: 0.0.9
+    rev: <check for latest release>
     hooks:
       - id: find_missing_model_group_labels
         args: [ '--allowed-labels', 'Finance,Revenue Metrics,Customer Metrics' ]
