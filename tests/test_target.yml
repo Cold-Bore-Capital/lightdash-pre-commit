@@ -1,0 +1,343 @@
+version: 2
+
+models:
+  - name: revenue_by_dvm
+    description: >
+      This model summarizes revenue and order count by veterinarian (DVM) across various dimensions including date,
+      network, and location. It utilizes `fct_order_items_mat` as its primary data source and
+      provides insights into performance on a daily granularity.
+
+    config:
+      materialized: table
+      enabled: true
+
+    meta:
+        label: "Revenue by DVM"
+        group_label: "Finance"
+
+        metrics:
+          revenue_per_invoice:
+            type: number
+            label: "Revenue Per Invoice"
+            description: "The total revenue generated per invoice."
+            format: "usd"
+            sql: "${revenue_sum} / ${order_count_sum}"
+            round: 0
+            group_label: "Revenue Metrics"
+
+    columns:
+      - name: date_at
+        description: "The date the order was placed."
+        tests:
+          - not_null
+        meta:
+          dimension:
+            type: date
+            label: "Date"
+            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER"]
+            group_label: "Dates"
+
+      - name: is_veterinarian
+        description: "Indicates if the provider is a veterinarian."
+        meta:
+          dimension:
+            label: "Is Veterinarian"
+            type: boolean
+            group_label: "Flags"
+
+      - name: provider_id
+        description: "The unique identifier for the provider."
+        meta:
+          dimension:
+            hidden: true
+
+      - name: location_id
+        description: "The unique identifier for the location."
+        meta:
+          dimension:
+            hidden: true
+
+      - name: network_name
+        description: "The name of the network the order belongs to."
+        meta:
+          dimension:
+            group_label: "Location Details"
+            label: "Network Name"
+            type: string
+
+      - name: location_name
+        description: "The location where the order was placed."
+        meta:
+          dimension:
+            group_label: "Location Details"
+            label: "Location Name"
+            type: string
+
+      - name: provider_name
+        description: "The name of the provider who serviced the order."
+        meta:
+          dimension:
+            label: "Provider Name"
+            type: string
+            group_label: "Text Dimensions"
+
+      - name: order_count
+        description: "The total number of orders placed."
+        meta:
+          dimension:
+            hidden: true
+          metrics:
+            order_count_sum:
+              type: sum
+              label: "Order Count"
+              description: "The total number of orders placed."
+              round: 0
+              group_label: "Counts"
+
+      - name: order_count_7d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            order_count_7d_sum:
+              label: "Order Count - PoP 7 Days"
+              group_label: "Period Over Period - 7 Days"
+              type: sum
+              description: "Total revenue for prior period Order Count looking back 7 days"
+              round: 0
+
+      - name: order_count_28d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            order_count_28d_sum:
+              label: "Order Count - PoP 28 Days"
+              group_label: "Period Over Period - 28 Days"
+              type: sum
+              description: "Total revenue for prior period Order Count looking back 28 days"
+              round: 0
+
+      - name: order_count_90d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            order_count_90d_sum:
+              label: "Order Count - PoP 90 Days"
+              group_label: "Period Over Period - 90 Days"
+              type: sum
+              description: "Total revenue for prior period Order Count looking back 90 days"
+              round: 0
+
+      - name: order_count_180d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            order_count_180d_sum:
+              label: "Order Count - PoP 180 Days"
+              group_label: "Period Over Period - 180 Days"
+              type: sum
+              description: "Total revenue for prior period Order Count looking back 180 days"
+              round: 0
+
+      - name: order_count_365d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            order_count_365d_sum:
+              label: "Order Count - PoP 365 Days"
+              group_label: "Period Over Period - 365 Days"
+              type: sum
+              description: "Total revenue for prior period Order Count looking back 365 days"
+              round: 0
+
+      - name: revenue_total
+        description: "The total revenue generated from the orders."
+        meta:
+          dimension:
+            hidden: true
+          metrics:
+            revenue_sum:
+              type: sum
+              label: "Revenue Sum"
+              description: "The total revenue generated from the orders."
+              format: "usd"
+              round: 0
+              group_label: "Finance"
+
+      - name: revenue_total_7d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            revenue_sum_7d:
+              label: "Revenue Sum - PoP 7 Days"
+              group_label: "Period Over Period - 7 Days"
+              type: sum
+              description: "Total revenue for prior period Revenue Sum looking back 7 days"
+              round: 0
+              format: "usd"
+
+      - name: revenue_total_28d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            revenue_sum_28d:
+              label: "Revenue Sum - PoP 28 Days"
+              group_label: "Period Over Period - 28 Days"
+              type: sum
+              description: "Total revenue for prior period Revenue Sum looking back 28 days"
+              round: 0
+              format: "usd"
+
+      - name: revenue_total_90d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            revenue_sum_90d:
+              label: "Revenue Sum - PoP 90 Days"
+              group_label: "Period Over Period - 90 Days"
+              type: sum
+              description: "Total revenue for prior period Revenue Sum looking back 90 days"
+              round: 0
+              format: "usd"
+
+      - name: revenue_total_180d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            revenue_sum_180d:
+              label: "Revenue Sum - PoP 180 Days"
+              group_label: "Period Over Period - 180 Days"
+              type: sum
+              description: "Total revenue for prior period Revenue Sum looking back 180 days"
+              round: 0
+              format: "usd"
+
+      - name: revenue_total_365d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            revenue_sum_365d:
+              label: "Revenue Sum - PoP 365 Days"
+              group_label: "Period Over Period - 365 Days"
+              type: sum
+              description: "Total revenue for prior period Revenue Sum looking back 365 days"
+              round: 0
+              format: "usd"
+
+      - name: plan_revenue_total
+        description: "The total plan_revenue generated from the orders."
+        meta:
+          dimension:
+            hidden: true
+          metrics:
+            plan_revenue_sum:
+              type: sum
+              label: "Revenue Sum"
+              description: "The total plan_revenue generated from the orders."
+              format: "usd"
+              round: 0
+              group_label: "Finance"
+
+      - name: plan_revenue_total_7d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            plan_revenue_sum_7d:
+              label: "Revenue Sum - PoP 7 Days"
+              group_label: "Period Over Period - 7 Days"
+              type: sum
+              description: "Total plan_revenue for prior period Revenue Sum looking back 7 days"
+              round: 0
+              format: "usd"
+
+      - name: plan_revenue_total_28d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            plan_revenue_sum_28d:
+              label: "Revenue Sum - PoP 28 Days"
+              group_label: "Period Over Period - 28 Days"
+              type: sum
+              description: "Total plan_revenue for prior period Revenue Sum looking back 28 days"
+              round: 0
+              format: "usd"
+
+      - name: plan_revenue_total_90d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            plan_revenue_sum_90d:
+              label: "Revenue Sum - PoP 90 Days"
+              group_label: "Period Over Period - 90 Days"
+              type: sum
+              description: "Total plan_revenue for prior period Revenue Sum looking back 90 days"
+              round: 0
+              format: "usd"
+
+      - name: plan_revenue_total_180d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            plan_revenue_sum_180d:
+              label: "Revenue Sum - PoP 180 Days"
+              group_label: "Period Over Period - 180 Days"
+              type: sum
+              description: "Total plan_revenue for prior period Revenue Sum looking back 180 days"
+              round: 0
+              format: "usd"
+
+      - name: plan_revenue_total_365d
+        meta:
+          dimension:
+            type: number
+            hidden: true
+
+          metrics:
+            plan_revenue_sum_365d:
+              label: "Revenue Sum - PoP 365 Days"
+              group_label: "Period Over Period - 365 Days"
+              type: sum
+              description: "Total plan_revenue for prior period Revenue Sum looking back 365 days"
+              round: 0
+              format: "usd"
