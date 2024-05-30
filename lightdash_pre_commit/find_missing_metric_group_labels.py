@@ -4,6 +4,9 @@ from typing import Sequence
 
 import yaml
 
+from lightdash_pre_commit.utils import has_dimensions
+from lightdash_pre_commit.utils import has_metrics
+
 
 def find_missing_group_labels(data: dict) -> list:
     errors = []
@@ -47,6 +50,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         try:
             with open(file_path, "r") as file:
                 data = yaml.safe_load(file)
+                # Skip files without dimensions or metrics
+                if not has_dimensions(data) or not has_metrics(data):
+                    continue
+                # Check for missing group labels
                 errors = find_missing_group_labels(data)
                 if errors:
                     print(f"Errors found in '{file_path}':")
