@@ -12,22 +12,26 @@ def find_missing_group_labels(data: dict) -> list:
         # Check metrics at the model-level 'meta' tag
         model_level_metrics = model.get("meta", {}).get("metrics", {})
         for metric, details in model_level_metrics.items():
-            if "group_label" not in details and not details.get(
-                "skip_group_label", False
+            if (
+                "group_label" not in details
+                and "groups" not in details
+                and not details.get("skip_group_label", False)
             ):
                 errors.append(
-                    f"Missing 'group_label' in model-level metric '{metric}'."
+                    f"Missing 'group_label' or 'groups' in model-level metric '{metric}'."
                 )
 
         # Check metrics within the columns' 'meta' tag
         for column in model.get("columns", []):
             if "meta" in column and "metrics" in column["meta"]:
                 for metric, details in column["meta"]["metrics"].items():
-                    if "group_label" not in details and not details.get(
-                        "skip_group_label", False
+                    if (
+                        "group_label" not in details
+                        and "groups" not in details
+                        and not details.get("skip_group_label", False)
                     ):
                         errors.append(
-                            f"Missing 'group_label' in column metric '{metric}'."
+                            f"Missing 'group_label' or 'groups' in column metric '{metric}'."
                         )
 
     return errors
@@ -38,7 +42,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument(
         "filenames",
         nargs="*",
-        help="Check YAML files for missing 'group_label' in metrics",
+        help="Check YAML files for missing 'group_label' or 'groups' in metrics",
     )
     args = parser.parse_args(argv)
 
