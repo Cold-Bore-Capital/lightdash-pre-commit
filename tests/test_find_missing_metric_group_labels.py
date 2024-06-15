@@ -126,6 +126,51 @@ models:
         errors = find_missing_group_labels(data)
         self.assertEqual(errors, [])
 
+    def test_groups_instead_of_group_label_attribute(self):
+        yaml_data = """
+models:
+  - name: test_all_metrics_have_group_label
+    meta:
+      metrics:
+        revenue_total:
+          sql: "sum(revenue)"
+          groups: ['abc']
+        profit_total:
+          sql: "sum(profit)"
+          skip_group_label: true
+
+    columns:
+      - name: date_at
+        meta:
+          dimension:
+            type: date
+            time_intervals: [ 'DAY', 'WEEK', 'MONTH', 'QUARTER' ]
+          additional_dimensions:
+            period_7_days:
+              type: string
+              sql: "abc"
+              group_label: "Period Indicators"
+            period_28_days:
+              type: string
+              sql: "abc"
+          metrics:
+            days_in_period:
+              type: number
+              sql: "(datediff('day', min(date_at), max(date_at)) + 1)"
+              groups: ['abc']
+      - name: revenue
+        meta:
+          dimension:
+            hidden: true
+          metrics:
+            total_revenue:
+              type: sum
+              groups: ['abc']
+        """
+        data = yaml.safe_load(yaml_data)
+        errors = find_missing_group_labels(data)
+        self.assertEqual(errors, [])
+
     def test_one_metric_missing_group_label(self):
         yaml_data = """
 models:
@@ -167,7 +212,10 @@ models:
         """
         data = yaml.safe_load(yaml_data)
         errors = find_missing_group_labels(data)
-        self.assertIn("Missing 'group_label' in column metric 'total_revenue'.", errors)
+        self.assertIn(
+            "Missing 'group_label' or 'groups' in column metric 'total_revenue'.",
+            errors,
+        )
 
     def test_metric_in_top_level_meta_missing_group_label(self):
         yaml_data = """
@@ -212,7 +260,8 @@ models:
         data = yaml.safe_load(yaml_data)
         errors = find_missing_group_labels(data)
         self.assertIn(
-            "Missing 'group_label' in model-level metric 'profit_total'.", errors
+            "Missing 'group_label' or 'groups' in model-level metric 'profit_total'.",
+            errors,
         )
 
     def test_multiple_metrics_missing_group_labels_across_models(self):
@@ -256,9 +305,9 @@ models:
         data = yaml.safe_load(yaml_data)
         errors = find_missing_group_labels(data)
         expected_errors = [
-            "Missing 'group_label' in model-level metric 'profit_total'.",
-            "Missing 'group_label' in column metric 'days_in_period'.",
-            "Missing 'group_label' in column metric 'total_revenue'.",
+            "Missing 'group_label' or 'groups' in model-level metric 'profit_total'.",
+            "Missing 'group_label' or 'groups' in column metric 'days_in_period'.",
+            "Missing 'group_label' or 'groups' in column metric 'total_revenue'.",
         ]
         self.assertEqual(errors, expected_errors)
 

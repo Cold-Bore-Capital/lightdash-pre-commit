@@ -58,6 +58,44 @@ models:
         errors = find_missing_group_labels(data)
         self.assertEqual(errors, [])
 
+    def test_all_dimensions_have_groups_key(self):
+        yaml_data = """
+models:
+  - name: test_all_dimensions_have_group_label
+    columns:
+      - name: date_at
+        meta:
+          dimension:
+            type: date
+            time_intervals: [ 'DAY', 'WEEK', 'MONTH', 'QUARTER' ]
+            groups: ["Time"]
+          additional_dimensions:
+            period_7_days:
+              type: string
+              sql: "abc"
+              groups: ["Period_Indicators"]
+            period_28_days:
+              type: string
+              sql: "abc"
+              groups: ["Period_Indicators"]
+          metrics:
+            days_in_period:
+              type: number
+              sql: "(datediff('day', min(date_at), max(date_at)) + 1)"
+              groups: ["Revenue"]
+      - name: revenue
+        meta:
+          dimension:
+            hidden: true
+          metrics:
+            total_revenue:
+              type: sum
+              groups: ["Revenue"]
+        """
+        data = yaml.safe_load(yaml_data)
+        errors = find_missing_group_labels(data)
+        self.assertEqual(errors, [])
+
     def test_skip_group_label_attribute(self):
         yaml_data = """
 models:
@@ -131,7 +169,10 @@ models:
         """
         data = yaml.safe_load(yaml_data)
         errors = find_missing_group_labels(data)
-        self.assertIn("Missing 'group_label' in dimension of column 'date_at'.", errors)
+        self.assertIn(
+            "Missing 'group_label' or 'groups' in dimension of column 'date_at'.",
+            errors,
+        )
 
     def test_multiple_dimensions_missing_group_labels_across_models(self):
         yaml_data = """
@@ -169,8 +210,8 @@ models:
         data = yaml.safe_load(yaml_data)
         errors = find_missing_group_labels(data)
         expected_errors = [
-            "Missing 'group_label' in dimension of column 'date_at'.",
-            "Missing 'group_label' in dimension of column 'revenue'.",
+            "Missing 'group_label' or 'groups' in dimension of column 'date_at'.",
+            "Missing 'group_label' or 'groups' in dimension of column 'revenue'.",
         ]
         self.assertEqual(errors, expected_errors)
 
@@ -209,7 +250,10 @@ models:
         """
         data = yaml.safe_load(yaml_data)
         errors = find_missing_group_labels(data)
-        self.assertIn("Missing 'group_label' in dimension of column 'date_at'.", errors)
+        self.assertIn(
+            "Missing 'group_label' or 'groups' in dimension of column 'date_at'.",
+            errors,
+        )
 
 
 if __name__ == "__main__":
